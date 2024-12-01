@@ -1,11 +1,19 @@
-const mongoose = require('mongoose');
+// File: routes/notifications.js
 
-const notificationSchema = new mongoose.Schema({
-    type: { type: String, enum: ['social', 'university'], required: true },
-    title: { type: String, required: true },
-    content: { type: String, required: true },
-    createdAt: { type: Date, default: Date.now },
-    read: { type: Boolean, default: false },
-});
+const express = require('express');
+const { protect } = require('../middleware/authMiddleware');
+const {
+    getNotifications,
+    createNotification,
+    markNotificationAsRead
+} = require('../controllers/notificationController');
 
-module.exports = mongoose.model('Notification', notificationSchema);
+const router = express.Router();
+
+router.use(protect);
+
+router.get('/', getNotifications);
+router.post('/', createNotification);
+router.put('/:notificationId/read', markNotificationAsRead);
+
+module.exports = router;
